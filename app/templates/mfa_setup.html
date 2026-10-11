@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Set up two-factor · Tally{% endblock %}
+{% block body %}
+<div class="app-shell">
+  {% include "_rail.html" %}
+
+  <main class="main">
+    <header class="main-header">
+      <div>
+        <h1 class="ledger-heading">Set up two-factor authentication</h1>
+        <p class="main-sub">Use an authenticator app like Google Authenticator, 1Password, or Authy.</p>
+      </div>
+    </header>
+
+    <section class="statement-block">
+      <div class="statement-block__label mfa-step--desktop">1. Scan this code with your app</div>
+      <div class="statement-block__label mfa-step--touch">1. Add Tally to your authenticator app</div>
+      <a href="{{ otpauth_uri }}" class="btn btn--primary mfa-open-app">Open in authenticator app</a>
+      <div class="mfa-qr">{{ qr_svg | safe }}</div>
+      <p class="main-sub">Or enter this key manually:</p>
+      <div class="mfa-secret-row">
+        <code class="mfa-secret" id="mfa-secret">{{ secret }}</code>
+        <button type="button" class="btn btn--ghost" id="copy-secret">Copy key</button>
+      </div>
+    </section>
+
+    <section class="statement-block">
+      <div class="statement-block__label">2. Enter the 6-digit code it shows</div>
+      <form method="POST" class="security-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code"
+               placeholder="123456" required maxlength="6" aria-label="6-digit code" autofocus>
+        <button type="submit" class="btn btn--primary">Turn on</button>
+      </form>
+    </section>
+  </main>
+</div>
+{% include "_bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById("copy-secret").addEventListener("click", async (e) => {
+    await navigator.clipboard.writeText(document.getElementById("mfa-secret").textContent);
+    e.target.textContent = "Copied";
+  });
+</script>
+{% endblock %}

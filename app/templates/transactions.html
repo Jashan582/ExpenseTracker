@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Transactions · Tally{% endblock %}
+{% block body %}
+<div class="app-shell">
+  {% include "_rail.html" %}
+
+  <main class="main">
+    <header class="main-header">
+      <div>
+        <h1 class="ledger-heading">Transactions</h1>
+        <p class="main-sub">Assign or fix categories as needed.</p>
+      </div>
+      <div class="main-header__actions">
+        <select id="owner-select" class="month-select"></select>
+        <select id="category-filter-select" class="month-select"></select>
+        <select id="month-select" class="month-select"></select>
+      </div>
+    </header>
+
+    <section class="txn-table-wrap">
+      <table class="txn-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Merchant</th>
+            <th>Card Owner</th>
+            <th>Amount</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody id="txn-tbody"></tbody>
+      </table>
+      <p id="empty-state" class="empty-state" style="display:none;">No transactions this month.</p>
+    </section>
+  </main>
+</div>
+{% include "_bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/transactions.js') }}"></script>
+{% endblock %}

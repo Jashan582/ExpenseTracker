@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Backup codes · Tally{% endblock %}
+{% block body %}
+<div class="app-shell">
+  {% include "_rail.html" %}
+
+  <main class="main">
+    <header class="main-header">
+      <div>
+        <h1 class="ledger-heading">Save your backup codes</h1>
+        <p class="main-sub">If you lose your phone, each code gets you in once. This is the only time they're shown.</p>
+      </div>
+    </header>
+
+    <section class="statement-block">
+      <div class="statement-block__label">Backup codes</div>
+      <ol class="mfa-codes" id="mfa-codes">
+        {% for code in codes %}<li>{{ code }}</li>{% endfor %}
+      </ol>
+      <div class="main-header__actions">
+        <button type="button" class="btn btn--ghost" id="copy-codes">Copy codes</button>
+        <a href="{{ url_for('security.index') }}" class="btn btn--primary">I've saved them</a>
+      </div>
+    </section>
+  </main>
+</div>
+{% include "_bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById("copy-codes").addEventListener("click", async (e) => {
+    const codes = [...document.querySelectorAll("#mfa-codes li")].map((li) => li.textContent).join("\n");
+    await navigator.clipboard.writeText(codes);
+    e.target.textContent = "Copied";
+  });
+</script>
+{% endblock %}

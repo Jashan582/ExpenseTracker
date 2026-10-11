@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Tally{% endblock %}
+{% block body %}
+<div class="auth-page">
+  {% include "_auth_brand_panel.html" %}
+
+  <main class="auth-panel auth-panel--form">
+    <div class="auth-form-wrap">
+      <h1 class="ledger-heading">Welcome back</h1>
+      <p class="auth-sub">Sign in to your Tally workspace.</p>
+      <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="email">Business email</label>
+        <input type="email" id="email" name="email" placeholder="you@business.com" required autofocus>
+
+        <div class="auth-field-label-row">
+          <label for="password">Password</label>
+          <a href="#" class="auth-form__forgot">Forgot password?</a>
+        </div>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+
+        <button type="submit" class="btn btn--primary btn--block">Sign in</button>
+      </form>
+      <p class="auth-switch">New to Tally? <a href="{{ url_for('auth.signup') }}">Ask your Everflow contact to get set up</a>.</p>
+    </div>
+  </main>
+</div>
+{% endblock %}

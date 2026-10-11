@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Security · Tally{% endblock %}
+{% block body %}
+<div class="app-shell">
+  {% include "_rail.html" %}
+
+  <main class="main">
+    <header class="main-header">
+      <div>
+        <h1 class="ledger-heading">Security</h1>
+        <p class="main-sub">Protect the bank connections in this workspace.</p>
+      </div>
+    </header>
+
+    <section class="statement-block">
+      <div class="statement-block__label">Two-factor authentication</div>
+      {% if current_user.mfa_enabled %}
+        <p class="security-status"><span class="security-badge security-badge--on">On</span>
+          Signing in needs your password and a code from your authenticator app.</p>
+        <p class="main-sub">{{ remaining_codes }} unused backup code{{ '' if remaining_codes == 1 else 's' }} left.</p>
+      {% else %}
+        <p class="security-status"><span class="security-badge">Off</span>
+          Anyone with your password can sign in and see your bank activity.</p>
+        <a href="{{ url_for('security.mfa_setup') }}" class="btn btn--primary">Set up two-factor authentication</a>
+      {% endif %}
+    </section>
+
+    {% if current_user.mfa_enabled %}
+      <section class="statement-block">
+        <div class="statement-block__label">Backup codes</div>
+        <p class="main-sub">Generate a fresh set of 10. Your old codes stop working.</p>
+        <form method="POST" action="{{ url_for('security.regenerate_backup_codes') }}" class="security-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="text" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code"
+                 placeholder="Current 6-digit code" required maxlength="6" aria-label="Current 6-digit code">
+          <button type="submit" class="btn btn--ghost">Generate new codes</button>
+        </form>
+      </section>
+
+      <section class="statement-block">
+        <div class="statement-block__label">Turn off two-factor authentication</div>
+        <form method="POST" action="{{ url_for('security.mfa_disable') }}" class="security-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="password" name="password" placeholder="Password" required aria-label="Password" autocomplete="current-password">
+          <input type="text" name="code" class="code-input" autocomplete="one-time-code"
+                 placeholder="Code or backup code" required maxlength="11" aria-label="Code or backup code">
+          <button type="submit" class="btn btn--ghost btn--danger">Turn off</button>
+        </form>
+      </section>
+    {% endif %}
+  </main>
+</div>
+{% include "_bottom_nav.html" %}
+{% endblock %}

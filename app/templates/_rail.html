@@ -1,0 +1,35 @@
+<nav class="rail">
+  <div class="rail-brand">{% include "_tally_mark.html" %} tally</div>
+  <ul class="rail-nav">
+    <li class="rail-nav__item {% if request.endpoint == 'dashboard.index' %}rail-nav__item--active{% endif %}">
+      <a href="{{ url_for('dashboard.index') }}">
+        <svg class="rail-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12l3-3 4 4 6-8 5 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 20h18" stroke-linecap="round"/></svg>
+        Overview
+      </a>
+    </li>
+    <li class="rail-nav__item {% if request.endpoint == 'transactions.index' %}rail-nav__item--active{% endif %}">
+      <a href="{{ url_for('transactions.index') }}">
+        <svg class="rail-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18" stroke-linecap="round"/></svg>
+        Transactions
+      </a>
+    </li>
+    <li class="rail-nav__item {% if request.endpoint == 'categories.index' %}rail-nav__item--active{% endif %}">
+      <a href="{{ url_for('categories.index') }}">
+        <svg class="rail-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><path d="M11 8h6M7 16H3" stroke-linecap="round"/></svg>
+        Categories
+      </a>
+    </li>
+  </ul>
+  <div class="rail-footer">
+    <button type="button" id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle light or dark theme">
+      <span class="theme-toggle__option" data-theme-option="light">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>
+      </span>
+      <span class="theme-toggle__option" data-theme-option="dark">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+      </span>
+    </button>
+    <a href="{{ url_for('security.index') }}" class="rail-logout">Security</a>
+    <a href="{{ url_for('auth.logout') }}" class="rail-logout">Log out</a>
+  </div>
+</nav>

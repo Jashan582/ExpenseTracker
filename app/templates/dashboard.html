@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Tally{% endblock %}
+{% block body %}
+<div class="app-shell">
+  {% include "_rail.html" %}
+
+  <main class="main">
+    <header class="main-header">
+      <div>
+        <h1 class="ledger-heading" id="month-heading">This month</h1>
+        <p class="main-sub">Where it went, by category.</p>
+      </div>
+      <div class="main-header__actions">
+        <div class="filter-dropdown">
+          <button id="filter-btn" class="btn btn--ghost" type="button">Filters</button>
+          <div id="filter-panel" class="filter-panel" hidden>
+            <div class="filter-panel__section">
+              <div class="filter-panel__label">Account holder</div>
+              <select id="owner-select" class="month-select filter-panel__select"></select>
+            </div>
+            <div class="filter-panel__section">
+              <div class="filter-panel__label-row">
+                <span class="filter-panel__label">Categories</span>
+                <span class="filter-panel__quick-actions">
+                  <button type="button" id="select-all-categories" class="filter-quick-link">All</button>
+                  <button type="button" id="clear-all-categories" class="filter-quick-link">None</button>
+                </span>
+              </div>
+              <div id="category-checkboxes" class="category-checkbox-list"></div>
+            </div>
+          </div>
+        </div>
+        <select id="month-select" class="month-select"></select>
+        <button id="connect-btn" class="btn btn--accent">Connect a card</button>
+        <button id="refresh-btn" class="btn btn--ghost">Refresh</button>
+      </div>
+    </header>
+
+    <div class="total-banner-card">
+      <span class="total-banner-card__label">Total spent this month</span>
+      <span class="total-banner-card__amount tabular-nums" id="total-amount">$0.00</span>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-card__label">Daily average</div>
+        <div class="stat-card__value tabular-nums" id="daily-avg">$0.00</div>
+      </div>
+      <div class="stat-card stat-card--clickable" id="top-category-card">
+        <div class="stat-card__label">Top category</div>
+        <div class="stat-card__value" id="top-category">—</div>
+        <div class="stat-card__sub" id="top-category-share"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Transactions</div>
+        <div class="stat-card__value tabular-nums" id="txn-count">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Vs. last month</div>
+        <div class="stat-card__value tabular-nums" id="month-delta">—</div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <section class="chart-card">
+        <div class="chart-card__header">
+          <span class="chart-card__title">Spending by category</span>
+        </div>
+        <canvas id="spend-chart" height="180"></canvas>
+      </section>
+
+      <section class="chart-card chart-card--donut">
+        <div class="chart-card__header">
+          <span class="chart-card__title">Share of spend</span>
+        </div>
+        <div class="chart-card__canvas-wrap">
+          <canvas id="category-donut"></canvas>
+        </div>
+        <div id="donut-legend" class="chart-legend"></div>
+      </section>
+    </div>
+
+    <section class="chart-card">
+      <div class="chart-card__header">
+        <span class="chart-card__title">6-month trend</span>
+      </div>
+      <canvas id="trend-chart" height="70"></canvas>
+    </section>
+
+    <section class="statement-block">
+      <div class="statement-block__label">Tips</div>
+      <ul id="tips-list" class="tips-list"></ul>
+    </section>
+  </main>
+</div>
+{% include "_bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Verify it's you · Tally{% endblock %}
+{% block body %}
+<div class="auth-page">
+  {% include "_auth_brand_panel.html" %}
+
+  <main class="auth-panel auth-panel--form">
+    <div class="auth-form-wrap">
+      <h1 class="ledger-heading">Verify it's you</h1>
+      <p class="auth-sub">Enter the 6-digit code from your authenticator app.</p>
+      <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="code">Authentication code</label>
+        <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code"
+               placeholder="123456" required autofocus maxlength="11">
+
+        <button type="submit" class="btn btn--primary btn--block">Verify</button>
+      </form>
+      <p class="auth-switch">Lost your phone? Enter one of your backup codes instead.</p>
+      <p class="auth-switch"><a href="{{ url_for('auth.login') }}">Back to sign in</a></p>
+    </div>
+  </main>
+</div>
+{% endblock %}

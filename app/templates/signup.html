@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Set up your account · Tally{% endblock %}
+{% block body %}
+<div class="auth-page">
+  {% include "_auth_brand_panel.html" %}
+
+  <main class="auth-panel auth-panel--form">
+    <div class="auth-form-wrap">
+      <h1 class="ledger-heading">Set up your account</h1>
+      <p class="auth-sub">One workspace per business — you can add connected cards after.</p>
+      <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="business_name">Business name</label>
+        <input type="text" id="business_name" name="business_name" placeholder="Your business name" required autofocus>
+
+        <label for="email">Business email</label>
+        <input type="email" id="email" name="email" placeholder="you@business.com" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="At least {{ min_password_length }} characters" required minlength="{{ min_password_length }}">
+
+        <button type="submit" class="btn btn--primary btn--block">Create account</button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+    </div>
+  </main>
+</div>
+{% endblock %}

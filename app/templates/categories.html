@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Categories · Tally{% endblock %}
+{% block body %}
+<div class="app-shell">
+  {% include "_rail.html" %}
+
+  <main class="main">
+    <header class="main-header">
+      <div>
+        <h1 class="ledger-heading">Categories</h1>
+        <p class="main-sub">Set up how spending gets grouped, and which merchants auto-assign where.</p>
+      </div>
+    </header>
+
+    <section class="statement-block">
+      <div class="statement-block__label">Add a category</div>
+      <form id="add-category-form" class="inline-form">
+        <input type="text" id="new-category-name" placeholder="Category name" required>
+        <input type="color" id="new-category-color" value="#6B7268" title="Chart color">
+        <button type="submit" class="btn btn--ghost">Add</button>
+      </form>
+    </section>
+
+    <section class="statement-block">
+      <div class="statement-block__label">Your categories</div>
+      <div id="category-list"></div>
+    </section>
+  </main>
+</div>
+{% include "_bottom_nav.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/categories.js') }}"></script>
+{% endblock %}
