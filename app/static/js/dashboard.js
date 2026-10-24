@@ -453,6 +453,44 @@ refreshBtn.addEventListener("click", async () => {
   refreshBtn.textContent = "Refresh";
 });
 
+// OAuth banks send the user off to the bank's own site and back to this
+// page with ?oauth_state_id=…, so the link_token has to survive the round
+// trip — Plaid requires reopening Link with the same token.
+const LINK_TOKEN_KEY = "plaid_link_token";
+
+function openPlaidLink(linkToken, receivedRedirectUri) {
+  const handler = Plaid.create({
+    token: linkToken,
+    receivedRedirectUri,
+    onSuccess: async (public_token) => {
+      sessionStorage.removeItem(LINK_TOKEN_KEY);
+      const res = await fetch("/plaid/exchange_public_token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ public_token }),
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({}));
+        alert(`Bank linked, but saving it failed: ${error || res.status}`);
+        return;
+      }
+      const [year, month] = monthSelect.value.split("-").map(Number);
+      loadMonth(year, month);
+    },
+    onExit: (err, metadata) => {
+      sessionStorage.removeItem(LINK_TOKEN_KEY);
+      if (err) {
+        console.error("Plaid Link exited with error", err, metadata);
+        alert(
+          `Couldn't connect to ${metadata?.institution?.name || "the bank"}: ` +
+          `${err.display_message || err.error_message} (${err.error_code})`
+        );
+      }
+    },
+  });
+  handler.open();
+}
+
 connectBtn.addEventListener("click", async () => {
   const res = await fetch("/plaid/create_link_token", { method: "POST" });
   const { link_token, error } = await res.json();
@@ -460,21 +498,20 @@ connectBtn.addEventListener("click", async () => {
     alert(`Couldn't start Plaid Link: ${error}`);
     return;
   }
-
-  const handler = Plaid.create({
-    token: link_token,
-    onSuccess: async (public_token) => {
-      await fetch("/plaid/exchange_public_token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ public_token }),
-      });
-      const [year, month] = monthSelect.value.split("-").map(Number);
-      loadMonth(year, month);
-    },
-  });
-  handler.open();
+  sessionStorage.setItem(LINK_TOKEN_KEY, link_token);
+  openPlaidLink(link_token);
 });
+
+if (new URLSearchParams(window.location.search).has("oauth_state_id")) {
+  const savedToken = sessionStorage.getItem(LINK_TOKEN_KEY);
+  const receivedRedirectUri = window.location.href;
+  history.replaceState(null, "", window.location.pathname);
+  if (savedToken) {
+    openPlaidLink(savedToken, receivedRedirectUri);
+  } else {
+    alert("Your bank connection session expired — please click Connect again.");
+  }
+}
 
 // Init
 populateOwnerSelect();

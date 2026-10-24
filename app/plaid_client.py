@@ -37,13 +37,16 @@ def get_plaid_client():
 def create_link_token(user_id: int) -> str:
     client = get_plaid_client()
     cfg = current_app.config
-    request = LinkTokenCreateRequest(
+    kwargs = dict(
         products=[Products(p) for p in cfg["PLAID_PRODUCTS"]],
         client_name="Expense Tracker",
         country_codes=[CountryCode(c) for c in cfg["PLAID_COUNTRY_CODES"]],
         language="en",
         user=LinkTokenCreateRequestUser(client_user_id=str(user_id)),
     )
+    if cfg.get("PLAID_REDIRECT_URI"):
+        kwargs["redirect_uri"] = cfg["PLAID_REDIRECT_URI"]
+    request = LinkTokenCreateRequest(**kwargs)
     response = client.link_token_create(request)
     return response.link_token
 

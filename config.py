@@ -19,6 +19,11 @@ class Config:
     PLAID_ENV = os.environ.get("PLAID_ENV", "sandbox")
     PLAID_COUNTRY_CODES = os.environ.get("PLAID_COUNTRY_CODES", "US,CA").split(",")
     PLAID_PRODUCTS = os.environ.get("PLAID_PRODUCTS", "transactions").split(",")
+    # Required for OAuth banks (most Canadian banks, Chase, etc.): after the
+    # user logs in on the bank's own site, Plaid sends them back here. Must
+    # exactly match a URI under Allowed redirect URIs in the Plaid dashboard,
+    # e.g. https://tally.everflowdigital.ca/
+    PLAID_REDIRECT_URI = os.environ.get("PLAID_REDIRECT_URI")
 
     TOKEN_ENCRYPTION_KEY = os.environ.get("TOKEN_ENCRYPTION_KEY")
 
